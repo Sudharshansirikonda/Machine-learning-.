@@ -7,54 +7,41 @@ Original file is located at
     https://colab.research.google.com/drive/1dTWi3bk20vFxdPiPqUDFqpfgC2iH8e18
 """
 
-from sklearn.preprocessing import MinMaxScaler
-import numpy as np
+import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
 
-# Example data
-data = np.array([[1, 2], [3, 4], [5, 6]])
+# Sample DataFrame
+data = {
+    'gender': ['male', 'female', 'female', 'male', 'female'],
+    'city': ['New York', 'Los Angeles', 'Chicago', 'Chicago', 'New York'],
+    'age': [23, 34, 45, 25, 36]
+}
 
-# Initialize the scaler
-scaler = MinMaxScaler()
+df = pd.DataFrame(data)
 
-# Fit and transform the data
-scaled_data = scaler.fit_transform(data)
+# Display original dataframe
+print("Original dataframe:")
+print(df)
 
-print(scaled_data)
+# Initialize OneHotEncoder
+one_hot_encoder = OneHotEncoder(sparse_output=False)
 
-from sklearn.preprocessing import StandardScaler
-import numpy as np
+# Columns to encode
+columns_to_encode = ["gender", "city"]
 
-# Example data
-data = np.array([[1, 2], [3, 4], [5, 6]])
+# Apply OneHotEncoder
+encoded_data = one_hot_encoder.fit_transform(df[columns_to_encode])
 
-# Initialize the scaler
-scaler = StandardScaler()
+# Get encoded column names
+encoded_columns = one_hot_encoder.get_feature_names_out(columns_to_encode)
 
-# Fit and transform the data
-scaled_data = scaler.fit_transform(data)
+# Convert encoded data to DataFrame
+encoded_df = pd.DataFrame(encoded_data, columns=encoded_columns)
 
-print(scaled_data)
+# Concatenate the original dataframe with the encoded data
+df_encoded = pd.concat([df, encoded_df], axis=1).drop(columns=columns_to_encode)
 
-from sklearn.preprocessing import StandardScaler
-import numpy as np
-
-# Example data (each row is an observation, each column is a feature)
-data = np.array([[1, 2], [3, 4], [5, 6]])
-
-# Initialize the StandardScaler
-scaler = StandardScaler()
-
-# Fit the scaler to the data and transform the data
-scaled_data = scaler.fit_transform(data)
-
-# Print the scaled data
-print("Scaled Data:")
-print(scaled_data)
-
-# Get the mean and standard deviation of the transformed data
-print("\nMean of transformed data (should be close to 0):")
-print(np.mean(scaled_data, axis=0))
-
-print("\nStandard deviation of transformed data (should be close to 1):")
-print(np.std(scaled_data, axis=0))
+# Display the resulting DataFrame
+print("\nDataFrame with One-Hot Encoded Columns:")
+print(df_encoded)
 
